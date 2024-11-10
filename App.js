@@ -10,6 +10,8 @@ import HomeProduct from './screens/HomeProduct';
 import { enableScreens } from 'react-native-screens';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
+import CheckoutScreen from './screens/Checkout';
+import ProductDetailsScreen from './screens/ProductDetails';
 
 enableScreens();
 
@@ -25,9 +27,6 @@ function HomeTabs({ route }) {
         tabBarInactiveTintColor: '#ccc',
         tabBarStyle: { position: 'absolute', height: 60 },
         headerShown: false,
-        tabBarBackground: () => (
-          <BlurView tint="light" intensity={100} style={StyleSheet.absoluteFill} />
-        ),
       }}
     >
       <Tab.Screen
@@ -40,7 +39,15 @@ function HomeTabs({ route }) {
       />
       <Tab.Screen
         name="HomeTab2"
-        component={HomeProduct}
+        component={CheckoutScreen}
+        options={{
+          title: 'Home',
+          tabBarIcon: ({ color }) => <FontAwesome5 name="home" size={24} color={color} />,
+        }}
+      />
+      <Tab.Screen
+        name="HomeTab3"
+        component={ProductDetailsScreen}
         options={{
           title: 'Home',
           tabBarIcon: ({ color }) => <FontAwesome5 name="home" size={24} color={color} />,
