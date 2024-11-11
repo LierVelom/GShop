@@ -12,6 +12,7 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
 import CheckoutScreen from './screens/Checkout';
 import ProductDetailsScreen from './screens/ProductDetails';
+import FilterScreen from './screens/FilterScreen';
 
 enableScreens();
 
@@ -27,6 +28,7 @@ function HomeTabs({ route }) {
         tabBarInactiveTintColor: '#ccc',
         tabBarStyle: { position: 'absolute', height: 60 },
         headerShown: false,
+        animation: 'shift',
       }}
     >
       <Tab.Screen
@@ -48,6 +50,14 @@ function HomeTabs({ route }) {
       <Tab.Screen
         name="HomeTab3"
         component={ProductDetailsScreen}
+        options={{
+          title: 'Home',
+          tabBarIcon: ({ color }) => <FontAwesome5 name="home" size={24} color={color} />,
+        }}
+      />
+      <Tab.Screen
+        name="HomeTab4"
+        component={FilterScreen}
         options={{
           title: 'Home',
           tabBarIcon: ({ color }) => <FontAwesome5 name="home" size={24} color={color} />,

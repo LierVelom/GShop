@@ -63,7 +63,7 @@ export default function ProductDetailsScreen({ navigation }) {
 						<Feather name="shopping-cart" size={24} color="#000" />
 					</TouchableOpacity>
 					<Image
-						source={require('../img/iphon13_1.jpg')}
+						source={require('../img/anhSignUp.png')}
 						style={styles.profilePic}
 					/>
 				</View>
