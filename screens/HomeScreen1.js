@@ -256,6 +256,7 @@ const HomeProduct =({navigation})=>{
         return(
             <TouchableOpacity
                 style={{backgroundColor:'#F5F2FD', flex:1, paddingHorizontal:5}}
+                key={item.idProduct}
             >
                 <View style={{flex:1}}>
                     <Image source={item.img[1]} style={{height:130, width:130, resizeMode:'cover'}}/>

@@ -14,7 +14,7 @@ import { Feather, FontAwesome } from '@expo/vector-icons';
 
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
-export default function ProductDetailsScreen({ navigation }) {
+export default function ProductDetailsScreen({ navigation, route }) {
 	const [notifyEnabled, setNotifyEnabled] = React.useState(false);
 
 	const renderRatingStars = (rating) => {

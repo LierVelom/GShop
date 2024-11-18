@@ -14,9 +14,11 @@ import { ArrowLeft, Edit2 } from 'lucide-react-native';
 
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
-const CartItem = ({ image, name, description, price, quantity }) => (
+import { fetchAPI } from '../auth/ActionAPI';
+
+const CartItem = ({ name, description, price, quantity }) => (
 	<View style={styles.cartItem}>
-		<Image source={image} style={styles.productImage} />
+		<Image source={require('../img/iphon13_1.jpg')} style={styles.productImage} />
 		<View style={styles.productInfo}>
 			<View style={styles.productHeader}>
 				<Text style={styles.productName}>{name}</Text>
@@ -38,38 +40,55 @@ const CartItem = ({ image, name, description, price, quantity }) => (
 );
 
 export default function CheckoutScreen({ navigation }) {
-	const cartItems = [
-		{
-			image: require('../img/iphon13_1.jpg'),
-			name: 'Headphone',
-			description: 'Consequat ex eu',
-			price: '500',
-			quantity: 1,
-		},
-		{
-			image: require('../img/iphon13_1.jpg'),
-			name: 'Headphone',
-			description: 'Consequat ex eu',
-			price: '300',
-			quantity: 1,
-		},
-		{
-			image: require('../img/iphon13_1.jpg'),
-			name: 'Smartphone',
-			description: 'Consequat ex eu',
-			price: '1000',
-			quantity: 1,
-		},
-		{
-			image: require('../img/iphon13_1.jpg'),
-			name: 'Smartphone',
-			description: 'Consequat ex eu',
-			price: '1000',
-			quantity: 1,
-		},
-	];
+
+	const [cartData, setCartData] = React.useState({});
+	const [cartItems, setCartItems] = React.useState([]);
+
+	React.useEffect(() => {
+		fetchAPI('cart')
+			.then((response) => {
+				setCartData(response.data);
+				setCartItems(response.data.products);
+			})
+			.catch((error) => {
+				console.error('Error fetching cart:', error);
+			});
+	}, []);
+
+	// const cartItems = [
+	// 	{
+	// 		image: require('../img/iphon13_1.jpg'),
+	// 		name: 'Headphone',
+	// 		description: 'Consequat ex eu',
+	// 		price: '500',
+	// 		quantity: 1,
+	// 	},
+	// 	{
+	// 		image: require('../img/iphon13_1.jpg'),
+	// 		name: 'Headphone',
+	// 		description: 'Consequat ex eu',
+	// 		price: '300',
+	// 		quantity: 1,
+	// 	},
+	// 	{
+	// 		image: require('../img/iphon13_1.jpg'),
+	// 		name: 'Smartphone',
+	// 		description: 'Consequat ex eu',
+	// 		price: '1000',
+	// 		quantity: 1,
+	// 	},
+	// 	{
+	// 		image: require('../img/iphon13_1.jpg'),
+	// 		name: 'Smartphone',
+	// 		description: 'Consequat ex eu',
+	// 		price: '1000',
+	// 		quantity: 1,
+	// 	},
+	// ];
 
 	const tabBarHeight = useBottomTabBarHeight();
+
+	const totalAmount = cartItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
 
 	return (
 
@@ -107,7 +126,7 @@ export default function CheckoutScreen({ navigation }) {
 
 				<View style={styles.totalSection}>
 					<Text style={styles.totalLabel}>TOTAL</Text>
-					<Text style={styles.totalAmount}>$2,800</Text>
+					<Text style={styles.totalAmount}>{totalAmount} $</Text>
 				</View>
 			</ScrollView>
 
