@@ -9,11 +9,13 @@ import SignUpScreen from './screens/SignUpScreen';
 import HomeScreen from './screens/HomeScreen';
 import { enableScreens } from 'react-native-screens';
 import { FontAwesome5 } from '@expo/vector-icons';
+import { Home, Search, Heart, Inbox, User } from 'lucide-react-native';
 import { BlurView } from 'expo-blur';
 import CheckoutScreen from './screens/Checkout';
 import ProductDetailsScreen from './screens/ProductDetails';
 import FilterScreen from './screens/FilterScreen';
 import ProductCart from './screens/ProductCart';
+import PaymentScreen from './screens/PaymentScreen';
 
 enableScreens();
 
@@ -25,7 +27,7 @@ function HomeTabs({ route }) {
   return (
     <Tab.Navigator
       screenOptions={{
-        tabBarActiveTintColor: '#2E599F',
+        tabBarActiveTintColor: '#06B6D4',
         tabBarInactiveTintColor: '#ccc',
         tabBarStyle: { position: 'absolute', height: 60 },
         headerShown: false,
@@ -37,23 +39,39 @@ function HomeTabs({ route }) {
         component={HomeScreen}
         options={{
           title: 'Home',
-          tabBarIcon: ({ color }) => <FontAwesome5 name="home" size={24} color={color} />,
+          tabBarIcon: ({ color }) => <Home size={24} color={color} />,
         }}
       />
       <Tab.Screen
-        name="HomeTab3"
-        component={ProductDetailsScreen}
+        name="SearchTab"
+        component={() => <></>}
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <FontAwesome5 name="home" size={24} color={color} />,
+          title: 'Search',
+          tabBarIcon: ({ color }) => <Search size={24} color={color} />,
         }}
       />
       <Tab.Screen
-        name="HomeTab4"
-        component={FilterScreen}
+        name="FavoriteTab"
+        component={() => <></>}
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <FontAwesome5 name="home" size={24} color={color} />,
+          title: 'Favorites',
+          tabBarIcon: ({ color }) => <Heart size={24} color={color} />,
+        }}
+      />
+      <Tab.Screen
+        name="InboxTab"
+        component={() => <></>}
+        options={{
+          title: 'Inbox',
+          tabBarIcon: ({ color }) => <Inbox size={24} color={color} />,
+        }}
+      />
+      <Tab.Screen
+        name="ProfileTab"
+        component={() => <></>}
+        options={{
+          title: 'Profile',
+          tabBarIcon: ({ color }) => <User size={24} color={color} />,
         }}
       />
     </Tab.Navigator>
@@ -72,6 +90,7 @@ export default function App() {
         <Stack.Screen name="product" component={ProductDetailsScreen} />
         <Stack.Screen name="filter" component={FilterScreen} />
         <Stack.Screen name="product-cart" component={ProductCart} />
+        <Stack.Screen name="payment" component={PaymentScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

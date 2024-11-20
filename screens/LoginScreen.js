@@ -28,7 +28,6 @@ const LoginScreen = ({ route, navigation }) => {
             if (response !== null) {
                 // Lưu token vào AsyncStorage
                 await saveToken(data.access_token);
-                Alert.alert('Login Success', 'You are now logged in!');
                 navigation.navigate('home');
             } else {
                 Alert.alert('Login Failed', data.message || 'Something went wrong');
@@ -106,7 +105,7 @@ const LoginScreen = ({ route, navigation }) => {
                     }}
                 >
                     <LinearGradient
-                        colors={['#2A3A5A', '#2E599F']}
+                        colors={['#2A3A5A', '#06B6D4']}
                         start={{ x: 0, y: 0 }}
                         end={{ x: 1, y: 0 }}
                         style={{ paddingVertical: 15, borderRadius: 50, alignItems: 'center' }}

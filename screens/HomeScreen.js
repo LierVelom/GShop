@@ -149,7 +149,7 @@ export default function HomeScreen({ navigation }) {
 				{productsWithPromotions.slice(0, 1).map((product) => (
 					<View style={styles.promotionCard} key={product.id}>
 						<View>
-							<Text style={styles.shoesTitle}>{product.name}</Text>
+							<Text style={styles.shoesTitle}>{product.promotions[0].name}</Text>
 							<Text style={styles.discount}>{product.promotions[0].description}</Text>
 							<TouchableOpacity style={styles.buyButton}
 								onPress={() => {
@@ -409,6 +409,8 @@ const styles = StyleSheet.create({
 		width: 32,
 		height: 32,
 		borderRadius: 16,
+		border: 1,
+		borderColor: '#ccc',
 	},
 	cartBadge: {
 		position: 'absolute',

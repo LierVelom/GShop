@@ -121,7 +121,11 @@ export default function CheckoutScreen({ navigation }) {
 				</View>
 			</ScrollView>
 
-			<TouchableOpacity style={styles.nextButton}>
+			<TouchableOpacity style={styles.nextButton}
+				onPress={() => {
+					navigation.navigate('payment', { totalAmount: totalAmount });
+				}}
+			>
 				<Text style={styles.nextButtonText}>Next</Text>
 			</TouchableOpacity>
 		</SafeAreaView>

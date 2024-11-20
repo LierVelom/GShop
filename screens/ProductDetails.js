@@ -173,7 +173,7 @@ export default function ProductDetailsScreen({ navigation, route }) {
 							key={index}
 							style={[
 								styles.dot,
-								{ backgroundColor: index === 0 ? '#576CD6' : '#E0E0E0' }
+								{ backgroundColor: index === 0 ? '#06B6D4' : '#E0E0E0' }
 							]}
 						/>
 					))}
@@ -190,19 +190,19 @@ export default function ProductDetailsScreen({ navigation, route }) {
 
 				<View style={styles.features}>
 					<View style={styles.featureItem}>
-						<FontAwesome name="flash" size={20} color="#576CD6" />
+						<FontAwesome name="flash" size={20} color="#06B6D4" />
 						<Text style={styles.featureText}>Express</Text>
 					</View>
 					<View style={styles.featureItem}>
-						<FontAwesome name="refresh" size={20} color="#576CD6" />
+						<FontAwesome name="refresh" size={20} color="#06B6D4" />
 						<Text style={styles.featureText}>30-day free return</Text>
 					</View>
 					<View style={styles.featureItem}>
-						<FontAwesome name="thumbs-up" size={20} color="#576CD6" />
+						<FontAwesome name="thumbs-up" size={20} color="#06B6D4" />
 						<Text style={styles.featureText}>Good review</Text>
 					</View>
 					<View style={styles.featureItem}>
-						<FontAwesome name="check-circle" size={20} color="#576CD6" />
+						<FontAwesome name="check-circle" size={20} color="#06B6D4" />
 						<Text style={styles.featureText}>Authorized shop</Text>
 					</View>
 				</View>
@@ -286,12 +286,12 @@ export default function ProductDetailsScreen({ navigation, route }) {
 
 			<View style={styles.bottomBar}>
 				<View style={styles.notifyContainer}>
-					<FontAwesome name="bell" size={24} color="#576CD6" />
+					<FontAwesome name="bell" size={24} color="#06B6D4" />
 					<Text style={styles.notifyText}>Notify me of promotions</Text>
 					<Switch
 						value={notifyEnabled}
 						onValueChange={setNotifyEnabled}
-						trackColor={{ false: '#E0E0E0', true: '#576CD6' }}
+						trackColor={{ false: '#E0E0E0', true: '#06B6D4' }}
 					/>
 				</View>
 				<View style={styles.buyContainer}>
@@ -300,7 +300,7 @@ export default function ProductDetailsScreen({ navigation, route }) {
 							navigation.navigate('product-cart', { id: product.id });
 						}}
 					>
-						<FontAwesome name="shopping-cart" size={24} color="#576CD6" />
+						<FontAwesome name="shopping-cart" size={24} color="#06B6D4" />
 					</TouchableOpacity>
 					<TouchableOpacity style={styles.buyButton}
 						onPress={() => {
@@ -322,7 +322,7 @@ const styles = StyleSheet.create({
 		paddingTop: Platform.OS === 'android' ? 25 : 0,
 	},
 	header: {
-		height: 56,
+		height: 60,
 		flexDirection: 'row',
 		alignItems: 'center',
 		justifyContent: 'space-between',
@@ -341,7 +341,7 @@ const styles = StyleSheet.create({
 	},
 	cartButton: {
 		padding: 8,
-		marginRight: -8,
+		marginRight: 8,
 		position: 'relative',
 	},
 	avatar: {
@@ -413,7 +413,7 @@ const styles = StyleSheet.create({
 		fontWeight: '600',
 	},
 	seeAll: {
-		color: '#576CD6',
+		color: '#06B6D4',
 	},
 	description: {
 		color: '#666',
@@ -559,14 +559,14 @@ const styles = StyleSheet.create({
 		height: 48,
 		borderRadius: 24,
 		borderWidth: 1,
-		borderColor: '#576CD6',
+		borderColor: '#06B6D4',
 		alignItems: 'center',
 		justifyContent: 'center',
 		marginRight: 16,
 	},
 	buyButton: {
 		flex: 1,
-		backgroundColor: '#576CD6',
+		backgroundColor: '#06B6D4',
 		height: 48,
 		borderRadius: 24,
 		alignItems: 'center',
