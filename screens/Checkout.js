@@ -8,23 +8,22 @@ import {
 	ScrollView,
 	StyleSheet,
 	SafeAreaView,
-	Platform 
+	Platform
 } from 'react-native';
 import { ArrowLeft, Edit2 } from 'lucide-react-native';
 
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
-
 import { fetchAPI } from '../auth/ActionAPI';
+import { getImageLink } from '../lib/getImageLink';
 
-const CartItem = ({ name, description, price, quantity }) => (
+const CartItem = ({ id, name, description, price, quantity, promotions, navigation }) => (
 	<View style={styles.cartItem}>
-		<Image source={require('../img/iphon13_1.jpg')} style={styles.productImage} />
+		<Image source={{ uri: getImageLink('products', id) }} style={styles.productImage} />
 		<View style={styles.productInfo}>
 			<View style={styles.productHeader}>
 				<Text style={styles.productName}>{name}</Text>
 				<TouchableOpacity
 					onPress={() => {
-
+						navigation.navigate('product-cart', { id: id });
 					}}
 				>
 					<Edit2 size={20} color="#666" />
@@ -32,12 +31,24 @@ const CartItem = ({ name, description, price, quantity }) => (
 			</View>
 			<Text style={styles.productDescription}>{description}</Text>
 			<View style={styles.priceQuantity}>
-				<Text style={styles.price}>${price}</Text>
+				<View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+					{Array.isArray(promotions) && promotions.length > 0 && (
+						<Text style={styles.priceDiscount}>${price.toFixed(2)}</Text>
+					)}
+					<Text style={styles.price}>
+						${
+							Array.isArray(promotions) && promotions.length > 0
+								? (price - price * promotions[0].discount_percentage / 100).toFixed(2)
+								: price
+						}
+					</Text>
+				</View>
 				<Text style={styles.quantity}>x{quantity}</Text>
 			</View>
 		</View>
 	</View>
 );
+
 
 export default function CheckoutScreen({ navigation }) {
 
@@ -55,44 +66,16 @@ export default function CheckoutScreen({ navigation }) {
 			});
 	}, []);
 
-	// const cartItems = [
-	// 	{
-	// 		image: require('../img/iphon13_1.jpg'),
-	// 		name: 'Headphone',
-	// 		description: 'Consequat ex eu',
-	// 		price: '500',
-	// 		quantity: 1,
-	// 	},
-	// 	{
-	// 		image: require('../img/iphon13_1.jpg'),
-	// 		name: 'Headphone',
-	// 		description: 'Consequat ex eu',
-	// 		price: '300',
-	// 		quantity: 1,
-	// 	},
-	// 	{
-	// 		image: require('../img/iphon13_1.jpg'),
-	// 		name: 'Smartphone',
-	// 		description: 'Consequat ex eu',
-	// 		price: '1000',
-	// 		quantity: 1,
-	// 	},
-	// 	{
-	// 		image: require('../img/iphon13_1.jpg'),
-	// 		name: 'Smartphone',
-	// 		description: 'Consequat ex eu',
-	// 		price: '1000',
-	// 		quantity: 1,
-	// 	},
-	// ];
-
-	const tabBarHeight = useBottomTabBarHeight();
-
-	const totalAmount = cartItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
+	const totalAmount = cartItems.reduce((total, item) => {
+		if (Array.isArray(item.promotions) && item.promotions.length > 0) {
+			return total + item.price - item.price * item.promotions[0].discount_percentage / 100;
+		}
+		return total + item.price;
+	}, 0).toFixed(2);
 
 	return (
 
-		<SafeAreaView style={[styles.container, { paddingBottom: tabBarHeight }]}>
+		<SafeAreaView style={[styles.container, {}]}>
 			<View style={styles.header}>
 				<TouchableOpacity
 					onPress={() => {
@@ -107,7 +90,15 @@ export default function CheckoutScreen({ navigation }) {
 
 			<ScrollView style={styles.content}>
 				{cartItems.map((item, index) => (
-					<CartItem key={index} {...item} />
+					<CartItem
+						key={index}
+						id={item.id}
+						name={item.name}
+						description={item.description}
+						price={item.price}
+						quantity={item.quantity}
+						promotions={item.promotions}
+						navigation={navigation} />
 				))}
 
 				<View style={styles.voucherSection}>
@@ -194,6 +185,11 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		marginTop: 8,
+	},
+	priceDiscount: {
+		color: '#666',
+		textDecorationLine: 'line-through',
+		marginRight: 4,
 	},
 	price: {
 		fontSize: 16,

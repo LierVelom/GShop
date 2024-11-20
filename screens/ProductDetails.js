@@ -8,14 +8,20 @@ import {
 	StyleSheet,
 	SafeAreaView,
 	Switch,
-	Platform
+	Platform,
+	Alert
 } from 'react-native';
 import { Feather, FontAwesome } from '@expo/vector-icons';
 
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+import { ArrowLeft, ShoppingCart } from 'lucide-react-native';
+import { getImageLink } from '../lib/getImageLink';
+import { fetchAPI, postAPI } from '../auth/ActionAPI';
 
 export default function ProductDetailsScreen({ navigation, route }) {
 	const [notifyEnabled, setNotifyEnabled] = React.useState(false);
+	const [product, setProduct] = React.useState({});
+	const [user, setUser] = React.useState({});
+	const [relatedProducts, setRelatedProducts] = React.useState([]);
 
 	const renderRatingStars = (rating) => {
 		return [...Array(5)].map((_, index) => (
@@ -45,36 +51,122 @@ export default function ProductDetailsScreen({ navigation, route }) {
 		));
 	};
 
-	const tabBarHeight = useBottomTabBarHeight();
+	React.useEffect(() => {
+		fetchAPI('user')
+			.then((response) => {
+				setUser(response);
+			})
+			.catch((error) => {
+				console.error('Error fetching user:', error);
+			});
+
+		fetchAPI('products/' + route.params.id)
+			.then((response) => {
+				response !== null &&
+					setProduct(response.data);
+			})
+			.catch((error) => {
+				console.error('Error fetching product:', error);
+			});
+
+		fetchAPI(`products/${route.params.id}/related`)
+			.then((response) => {
+				response !== null &&
+					setRelatedProducts(response.data);
+			})
+			.catch((error) => {
+				console.error('Error fetching related products:', error);
+			});
+
+	}, []);
+
+	const Price = () => {
+		return (
+			<View style={styles.priceRating}>
+				{product.promotions?.length > 0 ? (
+					<View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+						<Text style={styles.priceDiscount}>{product.price}$</Text>
+						<Text style={styles.price}>{(product.price - product.price * product.promotions[0].discount_percentage / 100).toFixed(2)}$</Text>
+						<View style={styles.discountBadge}>
+							<Text style={{ color: '#fff' }}>{Math.round(product.promotions[0].discount_percentage)}% OFF</Text>
+						</View>
+					</View>
+				) : (
+					<Text style={styles.price}>{product.price}</Text>
+				)}
+
+				<View style={styles.rating}>
+					{renderRatingStars(4.5)}
+					<Text style={styles.reviews}> 4.5 (99 reviews)</Text>
+				</View>
+			</View>
+		);
+	};
+
+
 
 	return (
-		<SafeAreaView style={[styles.container, { paddingBottom: tabBarHeight }]}>
+		<SafeAreaView style={[styles.container, {}]}>
 			<View style={styles.header}>
 				<TouchableOpacity
 					onPress={() => {
 						navigation.goBack();
 					}}
 				>
-					<FontAwesome name="angle-left" size={24} color="#000" />
+					<ArrowLeft size={24} color="#000" />
 				</TouchableOpacity>
-				<Text style={styles.headerTitle}>Headphone</Text>
+				<Text style={styles.headerTitle}>{product.name}</Text>
 				<View style={styles.headerRight}>
-					<TouchableOpacity style={styles.cartButton}>
-						<Feather name="shopping-cart" size={24} color="#000" />
+					<TouchableOpacity style={styles.cartButton}
+						onPress={() => {
+							navigation.navigate('checkout');
+						}}
+					>
+						<ShoppingCart size={24} color="#000" />
+						<View style={styles.cartBadge}>
+							<Text style={styles.cartBadgeText}>{route.params.cartTotal}</Text>
+						</View>
 					</TouchableOpacity>
-					<Image
-						source={require('../img/anhSignUp.png')}
-						style={styles.profilePic}
-					/>
+					<TouchableOpacity>
+						<Image
+							source={{ uri: getImageLink('users', user.id) }}
+							style={styles.avatar}
+						/>
+					</TouchableOpacity>
 				</View>
 			</View>
 
+			{/* <View style={styles.headerContainer}>
+				<TouchableOpacity style={styles.backButton}>
+					<ArrowLeft size={24} color="#000" />
+				</TouchableOpacity>
+
+				<Text style={styles.title}></Text>
+
+				<View style={styles.rightSection}>
+					<TouchableOpacity style={styles.cartButton}
+						onPress={() => {
+							navigation.navigate('checkout');
+						}}
+					>
+						
+					</TouchableOpacity>
+
+					<TouchableOpacity>
+						<Image
+							source={{ uri: getImageLink('users', user.id) }}
+							style={styles.avatar}
+						/>
+					</TouchableOpacity>
+				</View>
+			</View> */}
+
 			<ScrollView style={styles.content}>
 				<Image
-					source={require('../img/iphon13_1.jpg')}
+					source={{ uri: getImageLink('products', product.id) }}
 					style={styles.productImage}
 				/>
-
+				{/* 
 				<View style={styles.imageDots}>
 					{[0, 1, 2, 3].map((index) => (
 						<View
@@ -85,20 +177,14 @@ export default function ProductDetailsScreen({ navigation, route }) {
 							]}
 						/>
 					))}
-				</View>
+				</View> */}
 
-				<View style={styles.priceRating}>
-					<Text style={styles.price}>$59</Text>
-					<View style={styles.rating}>
-						{renderRatingStars(4.5)}
-						<Text style={styles.reviews}> 4.5 (99 reviews)</Text>
-					</View>
-				</View>
+				<Price />
 
 				<View style={styles.section}>
 					<Text style={styles.sectionTitle}>Description</Text>
 					<Text style={styles.description}>
-						Quis occaecat magna elit magna do nisi ipsum amet excepteur tempor nisi exercitation qui...
+						{product.description}
 					</Text>
 				</View>
 
@@ -177,18 +263,21 @@ export default function ProductDetailsScreen({ navigation, route }) {
 					</View>
 
 					<ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.productList}>
-						{[1, 2, 3].map((item) => (
-							<View key={item} style={styles.productCard}>
+						{relatedProducts.length === 0 && (
+							<Text>No related products</Text>
+						)}
+						{relatedProducts.map((item) => (
+							<View key={item.id} style={styles.productCard}>
 								<Image
-									source={require('../img/iphon13_1.jpg')}
+									source={{ uri: getImageLink('products', item.id) }}
 									style={styles.productCardImage}
 								/>
-								<Text style={styles.productCardTitle}>Headphone</Text>
+								<Text style={styles.productCardTitle}>{product.name}</Text>
 								<View style={styles.productCardRating}>
 									<FontAwesome name="star" size={12} color="#FFD700" />
 									<Text style={styles.productCardRatingText}>4.5</Text>
 								</View>
-								<Text style={styles.productCardPrice}>$99</Text>
+								<Text style={styles.productCardPrice}>{product.price}</Text>
 							</View>
 						))}
 					</ScrollView>
@@ -206,10 +295,18 @@ export default function ProductDetailsScreen({ navigation, route }) {
 					/>
 				</View>
 				<View style={styles.buyContainer}>
-					<TouchableOpacity style={styles.cartIconButton}>
+					<TouchableOpacity style={styles.cartIconButton}
+						onPress={() => {
+							navigation.navigate('product-cart', { id: product.id });
+						}}
+					>
 						<FontAwesome name="shopping-cart" size={24} color="#576CD6" />
 					</TouchableOpacity>
-					<TouchableOpacity style={styles.buyButton}>
+					<TouchableOpacity style={styles.buyButton}
+						onPress={() => {
+							navigation.navigate('product-cart', { id: product.id });
+						}}
+					>
 						<Text style={styles.buyButtonText}>Buy Now</Text>
 					</TouchableOpacity>
 				</View>
@@ -225,12 +322,14 @@ const styles = StyleSheet.create({
 		paddingTop: Platform.OS === 'android' ? 25 : 0,
 	},
 	header: {
+		height: 56,
 		flexDirection: 'row',
 		alignItems: 'center',
 		justifyContent: 'space-between',
-		padding: 16,
+		paddingHorizontal: 16,
+		backgroundColor: '#fff',
 		borderBottomWidth: 1,
-		borderBottomColor: '#E0E0E0',
+		borderBottomColor: '#E5E7EB',
 	},
 	headerTitle: {
 		fontSize: 18,
@@ -241,9 +340,11 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 	},
 	cartButton: {
-		marginRight: 16,
+		padding: 8,
+		marginRight: -8,
+		position: 'relative',
 	},
-	profilePic: {
+	avatar: {
 		width: 32,
 		height: 32,
 		borderRadius: 16,
@@ -276,6 +377,17 @@ const styles = StyleSheet.create({
 	price: {
 		fontSize: 24,
 		fontWeight: 'bold',
+	},
+	priceDiscount: {
+		color: '#666',
+		textDecorationLine: 'line-through',
+		marginRight: 4,
+	},
+	discountBadge: {
+		backgroundColor: '#F87171',
+		borderRadius: 4,
+		paddingHorizontal: 4,
+		marginLeft: 8,
 	},
 	rating: {
 		flexDirection: 'row',
@@ -464,5 +576,21 @@ const styles = StyleSheet.create({
 		color: '#fff',
 		fontSize: 16,
 		fontWeight: '600',
+	},
+	cartBadge: {
+		position: 'absolute',
+		top: 4,
+		right: 4,
+		backgroundColor: '#EF4444',
+		borderRadius: 10,
+		minWidth: 20,
+		height: 20,
+		justifyContent: 'center',
+		alignItems: 'center',
+	},
+	cartBadgeText: {
+		color: '#fff',
+		fontSize: 12,
+		fontWeight: 'bold',
 	},
 });

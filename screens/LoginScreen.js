@@ -3,6 +3,7 @@ import Icon from 'react-native-vector-icons/FontAwesome'
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useState } from 'react';
 import { saveToken, removeToken, getToken } from '../auth/AuthToken';
+import { postAPI } from '../auth/ActionAPI';
 
 const LoginScreen = ({ route, navigation }) => {
 
@@ -17,20 +18,14 @@ const LoginScreen = ({ route, navigation }) => {
 
     const handleLogin = async () => {
         try {
-            const response = await fetch('http://192.168.117.100:8000/api/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    login,
-                    password,
-                }),
+            const response = await postAPI('login', {
+                login: login,
+                password: password
             });
 
-            const data = await response.json();
+            const data = await response;
 
-            if (response.ok) {
+            if (response !== null) {
                 // Lưu token vào AsyncStorage
                 await saveToken(data.access_token);
                 Alert.alert('Login Success', 'You are now logged in!');

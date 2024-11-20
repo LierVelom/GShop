@@ -13,6 +13,7 @@ import { BlurView } from 'expo-blur';
 import CheckoutScreen from './screens/Checkout';
 import ProductDetailsScreen from './screens/ProductDetails';
 import FilterScreen from './screens/FilterScreen';
+import ProductCart from './screens/ProductCart';
 
 enableScreens();
 
@@ -34,14 +35,6 @@ function HomeTabs({ route }) {
       <Tab.Screen
         name="HomeTab"
         component={HomeScreen}
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <FontAwesome5 name="home" size={24} color={color} />,
-        }}
-      />
-      <Tab.Screen
-        name="HomeTab2"
-        component={CheckoutScreen}
         options={{
           title: 'Home',
           tabBarIcon: ({ color }) => <FontAwesome5 name="home" size={24} color={color} />,
@@ -75,6 +68,10 @@ export default function App() {
         <Stack.Screen name="login" component={LoginScreen} />
         <Stack.Screen name="sign" component={SignUpScreen} />
         <Stack.Screen name="home" component={HomeTabs} />
+        <Stack.Screen name="checkout" component={CheckoutScreen} />
+        <Stack.Screen name="product" component={ProductDetailsScreen} />
+        <Stack.Screen name="filter" component={FilterScreen} />
+        <Stack.Screen name="product-cart" component={ProductCart} />
       </Stack.Navigator>
     </NavigationContainer>
   );
