@@ -1,6 +1,6 @@
 import { getToken } from './AuthToken';
 
-const API_URL = '192.168.117.102:8000';
+const API_URL = '192.168.1.116:8000';
 
 const postAPI = async (endpoint, payload) => {
 	try {

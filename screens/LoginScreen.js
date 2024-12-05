@@ -28,6 +28,7 @@ const LoginScreen = ({ route, navigation }) => {
             if (response !== null) {
                 // Lưu token vào AsyncStorage
                 await saveToken(data.access_token);
+                
                 navigation.navigate('home');
             } else {
                 Alert.alert('Login Failed', data.message || 'Something went wrong');

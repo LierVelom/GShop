@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import { Feather, FontAwesome } from '@expo/vector-icons';
 
-import { ArrowLeft, ShoppingCart } from 'lucide-react-native';
+import { ArrowLeft, ShoppingCart, Pen } from 'lucide-react-native';
 import { getImageLink } from '../lib/getImageLink';
 import { fetchAPI, postAPI } from '../auth/ActionAPI';
 
@@ -22,6 +22,7 @@ export default function ProductDetailsScreen({ navigation, route }) {
 	const [product, setProduct] = React.useState({});
 	const [user, setUser] = React.useState({});
 	const [relatedProducts, setRelatedProducts] = React.useState([]);
+	const [reviews, setReviews] = React.useState([]);
 
 	const renderRatingStars = (rating) => {
 		return [...Array(5)].map((_, index) => (
@@ -34,22 +35,37 @@ export default function ProductDetailsScreen({ navigation, route }) {
 		));
 	};
 
-	const renderReviewBars = () => {
+	const renderReviewBars = (reviews) => {
+		reviews = Array.isArray(reviews) ? reviews : [];
+
 		const ratings = [5, 4, 3, 2, 1];
-		return ratings.map((rating) => (
-			<View key={rating} style={styles.ratingBar}>
-				<Text style={styles.ratingNumber}>{rating}</Text>
-				<View style={styles.barContainer}>
-					<View
-						style={[
-							styles.barFill,
-							{ width: rating === 5 ? '80%' : rating === 4 ? '60%' : '20%' }
-						]}
-					/>
+		const totalReviews = reviews.length;
+		const ratingCounts = ratings.map((rating) =>
+			reviews.filter((review) => review.rating === rating).length
+		);
+
+		return ratings.map((rating, index) => {
+			const count = ratingCounts[index];
+			const percentage = totalReviews > 0 ? (count / totalReviews) * 100 : 0;
+
+			return (
+				<View key={rating} style={styles.ratingBar}>
+					<Text style={styles.ratingNumber}>{rating}</Text>
+					<View style={styles.barContainer}>
+						<View
+							style={[
+								styles.barFill,
+								{ width: `${percentage}%` }
+							]}
+						/>
+					</View>
+					<Text style={styles.ratingCount}>{count}</Text>
 				</View>
-			</View>
-		));
+			);
+		});
 	};
+
+
 
 	React.useEffect(() => {
 		fetchAPI('user')
@@ -78,6 +94,14 @@ export default function ProductDetailsScreen({ navigation, route }) {
 				console.error('Error fetching related products:', error);
 			});
 
+		fetchAPI(`products/${route.params.id}/reviews`)
+			.then((response) => {
+				setReviews(response);
+			})
+			.catch((error) => {
+				console.error('Error fetching reviews:', error);
+			});
+
 	}, []);
 
 	const Price = () => {
@@ -96,8 +120,8 @@ export default function ProductDetailsScreen({ navigation, route }) {
 				)}
 
 				<View style={styles.rating}>
-					{renderRatingStars(4.5)}
-					<Text style={styles.reviews}> 4.5 (99 reviews)</Text>
+					{renderRatingStars(product.rating)}
+					<Text style={styles.reviews}> {product.rating} ({reviews.length} reviews)</Text>
 				</View>
 			</View>
 		);
@@ -127,12 +151,12 @@ export default function ProductDetailsScreen({ navigation, route }) {
 							<Text style={styles.cartBadgeText}>{route.params.cartTotal}</Text>
 						</View>
 					</TouchableOpacity>
-					<TouchableOpacity>
+					{/* <TouchableOpacity>
 						<Image
 							source={{ uri: getImageLink('users', user.id) }}
 							style={styles.avatar}
 						/>
-					</TouchableOpacity>
+					</TouchableOpacity> */}
 				</View>
 			</View>
 
@@ -210,47 +234,44 @@ export default function ProductDetailsScreen({ navigation, route }) {
 				<View style={styles.section}>
 					<View style={styles.sectionHeader}>
 						<Text style={styles.sectionTitle}>Reviews</Text>
-						<TouchableOpacity>
-							<Text style={styles.seeAll}>See all</Text>
+						<TouchableOpacity
+							onPress={() => {
+								navigation.navigate('productReview', { product });
+							}}
+							style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}
+						>
+							<Pen size={13} color="#06B6D4" />
+							<Text style={styles.seeAll}>Review this product</Text>
 						</TouchableOpacity>
 					</View>
 
 					<View style={styles.ratingOverview}>
 						<View style={styles.ratingLeft}>
-							<Text style={styles.ratingBig}>4.5/5</Text>
-							<Text style={styles.ratingCount}>(99 reviews)</Text>
+							<Text style={styles.ratingBig}>{product.rating}/5</Text>
+							<Text style={styles.ratingCount}>({reviews.length} reviews)</Text>
 							<View style={styles.ratingStars}>
-								{renderRatingStars(4.5)}
+								{renderRatingStars(product.rating)}
 							</View>
 						</View>
 						<View style={styles.ratingRight}>
-							{renderReviewBars()}
+							{renderReviewBars(reviews)}
 						</View>
 					</View>
 
 					<View style={styles.reviewList}>
-						<View style={styles.reviewItem}>
-							<Image
-								source={require('../img/iphon13_1.jpg')}
-								style={styles.reviewerPic}
-							/>
-							<View style={styles.reviewContent}>
-								<Text style={styles.reviewerName}>Jevon Raynor</Text>
-								<Text style={styles.reviewText}>Deserunt minim incididunt cillum</Text>
-								<Text style={styles.reviewTime}>A day ago</Text>
+						{reviews.map((review) => (
+							<View key={review.id} style={styles.reviewItem}>
+								<Image
+									source={{ uri: getImageLink('users', review.user_id) }}
+									style={styles.reviewerPic}
+								/>
+								<View style={styles.reviewContent}>
+									<Text style={styles.reviewerName}>{review.user.name}</Text>
+									<Text style={styles.reviewText}>{review.review}</Text>
+									<Text style={styles.reviewTime}>{new Date(review.created_at).toLocaleDateString()}</Text>
+								</View>
 							</View>
-						</View>
-						<View style={styles.reviewItem}>
-							<Image
-								source={require('../img/iphon13_1.jpg')}
-								style={styles.reviewerPic}
-							/>
-							<View style={styles.reviewContent}>
-								<Text style={styles.reviewerName}>Jason D.</Text>
-								<Text style={styles.reviewText}>Magna pariatur sit et ullamco paria</Text>
-								<Text style={styles.reviewTime}>3 days ago</Text>
-							</View>
-						</View>
+						))}
 					</View>
 				</View>
 
@@ -311,7 +332,7 @@ export default function ProductDetailsScreen({ navigation, route }) {
 					</TouchableOpacity>
 				</View>
 			</View>
-		</SafeAreaView>
+		</SafeAreaView >
 	);
 }
 

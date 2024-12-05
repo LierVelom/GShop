@@ -76,8 +76,7 @@ export default function PaymentScreen({ navigation, route }) {
 						postAPI('checkout', { payment_method: selectedPayment})
 							.then((data) => {
 								if (data) {
-									Alert.alert('Success', 'Payment successful!');
-									navigation.navigate('home');
+									navigation.navigate('paymentSuccessful', { totalAmount: route.params.totalAmount });
 								}
 							})
 							.catch((error) => {

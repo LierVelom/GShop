@@ -14,7 +14,6 @@ import { Ionicons } from '@expo/vector-icons';
 
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { fetchAPI } from '../auth/ActionAPI';
-import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 import { getImageLink } from '../lib/getImageLink'
 import { ArrowLeft, ShoppingCart } from 'lucide-react-native';
 
@@ -93,7 +92,7 @@ export default function HomeScreen({ navigation }) {
 					<ArrowLeft size={24} color="#000" />
 				</TouchableOpacity> */}
 
-				<Text style={styles.title}></Text>
+				<Text style={styles.title}>GSHOPPING APP</Text>
 
 				<View style={styles.rightSection}>
 					<TouchableOpacity style={styles.cartButton}
@@ -105,13 +104,6 @@ export default function HomeScreen({ navigation }) {
 						<View style={styles.cartBadge}>
 							<Text style={styles.cartBadgeText}>{cartTotal}</Text>
 						</View>
-					</TouchableOpacity>
-
-					<TouchableOpacity>
-						<Image
-							source={{ uri: getImageLink('users', user.id) }}
-							style={styles.avatar}
-						/>
 					</TouchableOpacity>
 				</View>
 			</View>
@@ -135,7 +127,11 @@ export default function HomeScreen({ navigation }) {
 				{/* Categories */}
 				<ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoriesContainer}>
 					{categories.map((category) => (
-						<TouchableOpacity key={category.id} style={styles.categoryItem}>
+						<TouchableOpacity key={category.id} style={styles.categoryItem}
+							onPress={() => {
+								navigation.navigate('categoryProductList', { id: category.id, name: category.name });
+							}}
+						>
 							<View style={[styles.categoryIcon, { backgroundColor: randomPastelColor() }]}>
 								<Image source={{ uri: getImageLink('categories', category.id) }} style={styles.categoryImage} />
 							</View>
@@ -204,7 +200,7 @@ export default function HomeScreen({ navigation }) {
 								<Text style={styles.productTitle}>{product.name}</Text>
 								<View style={styles.ratingContainer}>
 									<Ionicons name="star" size={16} color="#FFD700" />
-									<Text style={styles.rating}>5</Text>
+									<Text style={styles.rating}>{product.rating}</Text>
 								</View>
 								<Text style={styles.price}>${product.price}</Text>
 							</TouchableOpacity>

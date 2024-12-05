@@ -3,13 +3,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import React from 'react';
 import { getToken, removeToken } from '../auth/AuthToken';
 const HomeScreen=({ route, navigation })=>{
-    removeToken();
-    React.useEffect(() => {
-        if(getToken() !== null) {
-            console.log(getToken());
-            // navigation.navigate('home');
-        }
-    }, []);
+    
     return (
         <>
         <View style={styles.contailner}>
@@ -18,8 +12,8 @@ const HomeScreen=({ route, navigation })=>{
             </View>
 
             <View style={styles.bottom}>
-                <Text style={styles.bottom_title}>Plantyly</Text>
-                <Text style={{color:'#ffffff', fontSize:18}}>Để mua sắm bạn cần đăng nhập</Text>
+                <Text style={styles.bottom_title}>GSHOP</Text>
+                <Text style={{color:'#ffffff', fontSize:18}}></Text>
             </View>
 
             <View style={styles.footer}>

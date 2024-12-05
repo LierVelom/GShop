@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet, SafeAreaView, Platform, Alert } from 'react-native';
 import { ArrowLeft, ChevronRight, Star, Minus, Plus } from 'lucide-react-native';
 import { fetchAPI, deleteAPIWithStatus, putAPI, postAPI } from '../auth/ActionAPI';
+import { getImageLink } from '../lib/getImageLink';
 
 export default function ProductCart({ navigation, route }) {
 	const [quantity, setQuantity] = useState(1);
@@ -54,7 +55,7 @@ export default function ProductCart({ navigation, route }) {
 
 				{/* Main Image */}
 				<Image
-					source={{ uri: '/placeholder.svg?height=300&width=400' }}
+					source={{ uri: getImageLink('products', product.id) }}
 					style={styles.mainImage}
 				/>
 

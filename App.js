@@ -16,6 +16,12 @@ import ProductDetailsScreen from './screens/ProductDetails';
 import FilterScreen from './screens/FilterScreen';
 import ProductCart from './screens/ProductCart';
 import PaymentScreen from './screens/PaymentScreen';
+import UserProfileScreen from './screens/UserProfileScreen';
+import PaymentSuccesful from './screens/PaymentSuccessful';
+import InvoiceDetailScreen from './screens/InvoiceDetailScreen';
+import InvoiceListScreen from './screens/InvoiceListScreen';
+import CategoryProductList from './screens/CategoryProductListScreen';
+import ProductReviewScreen from './screens/ProductReviewScreen';
 
 enableScreens();
 
@@ -24,74 +30,79 @@ const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 function HomeTabs({ route }) {
-  return (
-    <Tab.Navigator
-      screenOptions={{
-        tabBarActiveTintColor: '#06B6D4',
-        tabBarInactiveTintColor: '#ccc',
-        tabBarStyle: { position: 'absolute', height: 60 },
-        headerShown: false,
-        animation: 'shift',
-      }}
-    >
-      <Tab.Screen
-        name="HomeTab"
-        component={HomeScreen}
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <Home size={24} color={color} />,
-        }}
-      />
-      <Tab.Screen
-        name="SearchTab"
-        component={() => <></>}
-        options={{
-          title: 'Search',
-          tabBarIcon: ({ color }) => <Search size={24} color={color} />,
-        }}
-      />
-      <Tab.Screen
-        name="FavoriteTab"
-        component={() => <></>}
-        options={{
-          title: 'Favorites',
-          tabBarIcon: ({ color }) => <Heart size={24} color={color} />,
-        }}
-      />
-      <Tab.Screen
-        name="InboxTab"
-        component={() => <></>}
-        options={{
-          title: 'Inbox',
-          tabBarIcon: ({ color }) => <Inbox size={24} color={color} />,
-        }}
-      />
-      <Tab.Screen
-        name="ProfileTab"
-        component={() => <></>}
-        options={{
-          title: 'Profile',
-          tabBarIcon: ({ color }) => <User size={24} color={color} />,
-        }}
-      />
-    </Tab.Navigator>
-  );
+	return (
+		<Tab.Navigator
+			screenOptions={{
+				tabBarActiveTintColor: '#06B6D4',
+				tabBarInactiveTintColor: '#ccc',
+				tabBarStyle: { position: 'absolute', height: 60 },
+				headerShown: false,
+				animation: 'shift',
+			}}
+		>
+			<Tab.Screen
+				name="HomeTab"
+				component={HomeScreen}
+				options={{
+					title: 'Home',
+					tabBarIcon: ({ color }) => <Home size={24} color={color} />,
+				}}
+			/>
+			<Tab.Screen
+				name="SearchTab"
+				component={FilterScreen}
+				options={{
+					title: 'Search',
+					tabBarIcon: ({ color }) => <Search size={24} color={color} />,
+				}}
+			/>
+			<Tab.Screen
+				name="FavoriteTab"
+				component={HomeScreen}
+				options={{
+					title: 'Favorites',
+					tabBarIcon: ({ color }) => <Heart size={24} color={color} />,
+				}}
+			/>
+			<Tab.Screen
+				name="InboxTab"
+				component={HomeScreen}
+				options={{
+					title: 'Inbox',
+					tabBarIcon: ({ color }) => <Inbox size={24} color={color} />,
+				}}
+			/>
+			<Tab.Screen
+				name="ProfileTab"
+				component={UserProfileScreen}
+				options={{
+					title: 'Profile',
+					tabBarIcon: ({ color }) => <User size={24} color={color} />,
+				}}
+			/>
+		</Tab.Navigator>
+	);
 }
 
 export default function App() {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="welcome" component={WelcomeScreen} />
-        <Stack.Screen name="login" component={LoginScreen} />
-        <Stack.Screen name="sign" component={SignUpScreen} />
-        <Stack.Screen name="home" component={HomeTabs} />
-        <Stack.Screen name="checkout" component={CheckoutScreen} />
-        <Stack.Screen name="product" component={ProductDetailsScreen} />
-        <Stack.Screen name="filter" component={FilterScreen} />
-        <Stack.Screen name="product-cart" component={ProductCart} />
-        <Stack.Screen name="payment" component={PaymentScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
+	return (
+		<NavigationContainer>
+			<Stack.Navigator screenOptions={{ headerShown: false }}>
+				<Stack.Screen name="welcome" component={WelcomeScreen} />
+				<Stack.Screen name="login" component={LoginScreen} />
+				<Stack.Screen name="sign" component={SignUpScreen} />
+				<Stack.Screen name="home" component={HomeTabs} />
+				<Stack.Screen name="checkout" component={CheckoutScreen} />
+				<Stack.Screen name="product" component={ProductDetailsScreen} />
+				<Stack.Screen name="filter" component={FilterScreen} />
+				<Stack.Screen name="product-cart" component={ProductCart} />
+				<Stack.Screen name="payment" component={PaymentScreen} />
+				<Stack.Screen name="paymentSuccessful" component={PaymentSuccesful} />
+				<Stack.Screen name="invoiceDetail" component={InvoiceDetailScreen} />
+				<Stack.Screen name="invoiceList" component={InvoiceListScreen} />
+				<Stack.Screen name="categoryProductList" component={CategoryProductList} />
+				<Stack.Screen name="productReview" component={ProductReviewScreen} />
+			</Stack.Navigator>
+		</NavigationContainer>
+	);
 }

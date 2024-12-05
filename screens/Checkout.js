@@ -79,7 +79,7 @@ export default function CheckoutScreen({ navigation }) {
 			<View style={styles.header}>
 				<TouchableOpacity
 					onPress={() => {
-						navigation.goBack();
+						navigation.navigate('home');
 					}}
 				>
 					<ArrowLeft size={24} color="#000" />
@@ -242,7 +242,7 @@ const styles = StyleSheet.create({
 		fontWeight: '600',
 	},
 	nextButton: {
-		backgroundColor: '#576CD6',
+		backgroundColor: '#06B6D4',
 		margin: 16,
 		padding: 16,
 		borderRadius: 8,
