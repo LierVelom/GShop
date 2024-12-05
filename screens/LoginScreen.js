@@ -10,12 +10,6 @@ const LoginScreen = ({ route, navigation }) => {
     const [login, setLogin] = useState('1234567890');
     const [password, setPassword] = useState('password');
 
-    // React.useEffect(() => {
-    //     if(getToken() !== null) {
-    //         navigation.navigate('home');
-    //     }
-    // }, []);
-
     const handleLogin = async () => {
         try {
             const response = await postAPI('login', {

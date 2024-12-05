@@ -32,15 +32,22 @@ const CartItem = ({ id, name, description, price, quantity, promotions, navigati
 			<Text style={styles.productDescription}>{description}</Text>
 			<View style={styles.priceQuantity}>
 				<View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-					{Array.isArray(promotions) && promotions.length > 0 && (
-						<Text style={styles.priceDiscount}>${price.toFixed(2)}</Text>
-					)}
+					{Array.isArray(promotions) && promotions.length > 0 &&
+						promotions[0]?.discount_percentage &&
+						new Date() >= new Date(promotions[0].start_date) &&
+						new Date() <= new Date(promotions[0].end_date) && (
+							<Text style={styles.priceDiscount}>
+								${price.toFixed(2)}
+							</Text>
+						)}
 					<Text style={styles.price}>
-						${
-							Array.isArray(promotions) && promotions.length > 0
-								? (price - price * promotions[0].discount_percentage / 100).toFixed(2)
-								: price
-						}
+						${Array.isArray(promotions) &&
+							promotions.length > 0 &&
+							promotions[0]?.discount_percentage &&
+							new Date() >= new Date(promotions[0].start_date) &&
+							new Date() <= new Date(promotions[0].end_date)
+							? (price - price * promotions[0].discount_percentage / 100).toFixed(2)
+							: price.toFixed(2)}
 					</Text>
 				</View>
 				<Text style={styles.quantity}>x{quantity}</Text>
@@ -66,12 +73,36 @@ export default function CheckoutScreen({ navigation }) {
 			});
 	}, []);
 
-	const totalAmount = cartItems.reduce((total, item) => {
-		if (Array.isArray(item.promotions) && item.promotions.length > 0) {
-			return total + item.price - item.price * item.promotions[0].discount_percentage / 100;
-		}
-		return total + item.price;
-	}, 0).toFixed(2);
+	const currentDate = new Date();
+
+	const calculateTotalAmount = (cartItems) => {
+		const currentDate = new Date(); // Lấy ngày hiện tại
+
+		const totalAmount = cartItems.reduce((total, item) => {
+			const { price, quantity, promotions } = item;
+
+			// Kiểm tra nếu có khuyến mãi hợp lệ
+			if (Array.isArray(promotions) && promotions.length > 0) {
+				const activePromotion = promotions.find(promo => {
+					const startDate = new Date(promo.start_date);
+					const endDate = new Date(promo.end_date);
+					return currentDate >= startDate && currentDate <= endDate; // Khuyến mãi còn hiệu lực
+				});
+
+				if (activePromotion) {
+					const discount = price * (activePromotion.discount_percentage / 100);
+					return total + (price - discount) * quantity; // Tính giá giảm
+				}
+			}
+
+			// Nếu không có khuyến mãi
+			return total + price * quantity;
+		}, 0);
+
+		return totalAmount.toFixed(2); // Làm tròn 2 chữ số thập phân
+	};
+
+	const totalAmount = calculateTotalAmount(cartItems);
 
 	return (
 
